@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Лабораторная работа №5 - Формы (Вариант 5)</title>
+    <style>
+        body {
+            font-family: Verdana, Geneva, Tahoma, sans-serif;
+            margin: 20px;
+            background-color: #f9f9f9;
+        }
+        h1, h2 {
+            color: darkcyan;
+        }
+        form, section {
+            background-color: white;
+            padding: 20px;
+            margin-bottom: 30px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
+        input[type="text"], input[type="button"] {
+            padding: 8px;
+            margin: 5px;
+            font-size: 1rem;
+            width: 220px;
+        }
+        input[type="button"] {
+            cursor: pointer;
+            background-color: darkcyan;
+            color: white;
+            border: 2px solid darkcyan;
+            border-radius: 4px;
+        }
+        .error {
+            color: red;
+            font-weight: bold;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+        }
+        th, td {
+            border: 1px solid #ccc;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #e0f0f0;
+        }
+        .chart {
+            font-family: monospace;
+            margin: 20px 0;
+            line-height: 1.8;
+            font-size: 1.1em;
+        }
+        .result {
+            margin-top: 15px;
+            padding: 10px;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Лабораторная работа №5 — Формы</h1>
+    <h2>Вариант 5</h2>
+
+    <!-- 1. Расчёт рабочих и выходных дней -->
+    <section>
+        <h2>1. Расчёт рабочих и выходных дней между двумя датами</h2>
+        <form id="dateForm">
+            <label>Дата начала (ДД.ММ.ГГГГ):</label><br>
+            <input type="text" id="startDate" required><br><br>
+            
+            <label>Дата окончания (ДД.ММ.ГГГГ):</label><br>
+            <input type="text" id="endDate" required><br><br>
+            
+            <input type="button" value="Рассчитать" onclick="calculateDays()">
+        </form>
+        <div id="daysResult" class="result"></div>
+    </section>
+
+    <!-- 2. Анкета сотрудников -->
+    <section>
+        <h2>2. Анкета сотрудников и категории по стажу</h2>
+        <p><strong>Сегодня:</strong> <span id="currentDate"></span></p>
+        
+        <table id="employeesTable">
+            <thead>
+                <tr>
+                    <th>Фамилия</th>
+                    <th>Дата приёма</th>
+                    <th>Стаж (лет)</th>
+                    <th>Категория</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+
+        <h3>Количество сотрудников по категориям</h3>
+        <table id="summaryTable">
+            <thead>
+                <tr>
+                    <th>Категория</th>
+                    <th>Количество</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+
+        <h3>Диаграмма (символьная)</h3>
+        <div id="chart" class="chart"></div>
+    </section>
+
+    <script>
+        // Текущая дата
+        function getCurrentDate() {
+            const now = new Date();
+            document.getElementById('currentDate').textContent = now.toLocaleDateString('ru-RU');
+            return now;
+        }
+
+        // Сотрудники
+        const employees = [
+            { name: "Иванов", hireDate: "2024-03-15" },
+            { name: "Петрова", hireDate: "2022-11-01" },
+            { name: "Сидоров", hireDate: "2019-05-20" },
+            { name: "Кузнецова", hireDate: "2018-01-10" },
+            { name: "Смирнов", hireDate: "2026-02-01" },
+            { name: "Васильева", hireDate: "2015-08-30" }
+        ];
+
+        // Функция валидации и преобразования строки в Date
+        function parseDate(dateStr) {
+            if (!dateStr) return null;
+
+            // Убираем лишние пробелы
+            dateStr = dateStr.trim();
+
+            // Поддержка форматов: YYYY-MM-DD и DD.MM.YYYY
+            let date = null;
+
+            // Формат YYYY-MM-DD
+            if (/^\d{4}-\d{1,2}-\d{1,2}$/.test(dateStr)) {
+                date = new Date(dateStr);
+            }
+            // Формат DD.MM.YYYY
+            else if (/^\d{1,2}\.\d{1,2}\.\d{4}$/.test(dateStr)) {
+                const [day, month, year] = dateStr.split('.').map(Number);
+                date = new Date(year, month - 1, day);
+            }
+
+            // Проверка, что дата корректна
+            if (date && !isNaN(date.getTime())) {
+                return date;
+            }
+            return null;
+        }
+
+        // Расчёт рабочих и выходных дней
+        function calculateDays() {
+            const startInput = document.getElementById('startDate').value.trim();
+            const endInput = document.getElementById('endDate').value.trim();
+            const resultDiv = document.getElementById('daysResult');
+
+            resultDiv.innerHTML = '';
+
+            if (!startInput || !endInput) {
+                resultDiv.innerHTML = '<span class="error">Ошибка: Оба поля должны быть заполнены!</span>';
+                return;
+            }
+
+            const startDate = parseDate(startInput);
+            const endDate = parseDate(endInput);
+
+            if (!startDate) {
+                resultDiv.innerHTML = '<span class="error">Ошибка: Неверный формат даты начала!</span>';
+                return;
+            }
+            if (!endDate) {
+                resultDiv.innerHTML = '<span class="error">Ошибка: Неверный формат даты окончания!</span>';
+                return;
+            }
+
+            if (startDate > endDate) {
+                resultDiv.innerHTML = '<span class="error">Ошибка: Дата начала должна быть раньше или равна дате окончания!</span>';
+                return;
+            }
+
+            let workingDays = 0;
+            let weekendDays = 0;
+            let current = new Date(startDate);
+
+            while (current <= endDate) {
+                const dayOfWeek = current.getDay();
+                if (dayOfWeek === 0 || dayOfWeek === 6) {
+                    weekendDays++;
+                } else {
+                    workingDays++;
+                }
+                current.setDate(current.getDate() + 1);
+            }
+
+            resultDiv.innerHTML = `
+                <strong>Результат:</strong><br>
+                Период: ${startDate.toLocaleDateString('ru-RU')} — ${endDate.toLocaleDateString('ru-RU')}<br>
+                Рабочих дней: <strong>${workingDays}</strong><br>
+                Выходных дней: <strong>${weekendDays}</strong><br>
+                Всего дней: <strong>${workingDays + weekendDays}</strong>
+            `;
+        }
+
+        // Заполнение таблицы сотрудников
+        function fillEmployeesTable(today) {
+            const tbody = document.querySelector('#employeesTable tbody');
+            tbody.innerHTML = '';
+            
+            let young = 0, experienced = 0, veteran = 0;
+
+            employees.forEach(emp => {
+                const hire = new Date(emp.hireDate);
+                let years = today.getFullYear() - hire.getFullYear();
+                const monthDiff = today.getMonth() - hire.getMonth();
+                if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < hire.getDate())) {
+                    years--;
+                }
+
+                let category = '';
+                if (years < 1) {
+                    category = 'Молодой';
+                    young++;
+                } else if (years <= 5) {
+                    category = 'Опытный';
+                    experienced++;
+                } else {
+                    category = 'Ветеран';
+                    veteran++;
+                }
+
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${emp.name}</td>
+                    <td>${hire.toLocaleDateString('ru-RU')}</td>
+                    <td>${years}</td>
+                    <td>${category}</td>
+                `;
+                tbody.appendChild(row);
+            });
+
+            // Сводная таблица
+            const summaryBody = document.querySelector('#summaryTable tbody');
+            summaryBody.innerHTML = `
+                <tr><td>Молодой (&lt; 1 года)</td><td>${young}</td></tr>
+                <tr><td>Опытный (1–5 лет)</td><td>${experienced}</td></tr>
+                <tr><td>Ветеран (&gt; 5 лет)</td><td>${veteran}</td></tr>
+            `;
+
+            // Символьная диаграмма
+            const maxCount = Math.max(young, experienced, veteran);
+            const chartHTML = `
+                Молодой:   ${'█'.repeat(young)} ${young}<br>
+                Опытный:   ${'█'.repeat(experienced)} ${experienced}<br>
+                Ветеран:   ${'█'.repeat(veteran)} ${veteran}
+            `;
+            document.getElementById('chart').innerHTML = chartHTML;
+        }
+
+        // Инициализация
+        window.onload = function() {
+            const today = getCurrentDate();
+            fillEmployeesTable(today);
+        };
+    </script>
+</body>
+</html>
