@@ -67,7 +67,6 @@
     <h1>Лабораторная работа №5 — Формы</h1>
     <h2>Вариант 5</h2>
 
-    <!-- 1. Расчёт рабочих и выходных дней -->
     <section>
         <h2>1. Расчёт рабочих и выходных дней между двумя датами</h2>
         <form id="dateForm">
@@ -82,7 +81,6 @@
         <div id="daysResult" class="result"></div>
     </section>
 
-    <!-- 2. Анкета сотрудников -->
     <section>
         <h2>2. Анкета сотрудников и категории по стажу</h2>
         <p><strong>Сегодня:</strong> <span id="currentDate"></span></p>
@@ -115,14 +113,12 @@
     </section>
 
     <script>
-        // Текущая дата
         function getCurrentDate() {
             const now = new Date();
             document.getElementById('currentDate').textContent = now.toLocaleDateString('ru-RU');
             return now;
         }
 
-        // Сотрудники
         const employees = [
             { name: "Иванов", hireDate: "2024-03-15" },
             { name: "Петрова", hireDate: "2022-11-01" },
@@ -132,34 +128,25 @@
             { name: "Васильева", hireDate: "2015-08-30" }
         ];
 
-        // Функция валидации и преобразования строки в Date
         function parseDate(dateStr) {
             if (!dateStr) return null;
 
-            // Убираем лишние пробелы
             dateStr = dateStr.trim();
 
-            // Поддержка форматов: YYYY-MM-DD и DD.MM.YYYY
             let date = null;
 
-            // Формат YYYY-MM-DD
-            if (/^\d{4}-\d{1,2}-\d{1,2}$/.test(dateStr)) {
-                date = new Date(dateStr);
-            }
-            // Формат DD.MM.YYYY
+    
             else if (/^\d{1,2}\.\d{1,2}\.\d{4}$/.test(dateStr)) {
                 const [day, month, year] = dateStr.split('.').map(Number);
                 date = new Date(year, month - 1, day);
             }
 
-            // Проверка, что дата корректна
             if (date && !isNaN(date.getTime())) {
                 return date;
             }
             return null;
         }
 
-        // Расчёт рабочих и выходных дней
         function calculateDays() {
             const startInput = document.getElementById('startDate').value.trim();
             const endInput = document.getElementById('endDate').value.trim();
@@ -212,7 +199,6 @@
             `;
         }
 
-        // Заполнение таблицы сотрудников
         function fillEmployeesTable(today) {
             const tbody = document.querySelector('#employeesTable tbody');
             tbody.innerHTML = '';
@@ -249,7 +235,6 @@
                 tbody.appendChild(row);
             });
 
-            // Сводная таблица
             const summaryBody = document.querySelector('#summaryTable tbody');
             summaryBody.innerHTML = `
                 <tr><td>Молодой (&lt; 1 года)</td><td>${young}</td></tr>
@@ -257,7 +242,6 @@
                 <tr><td>Ветеран (&gt; 5 лет)</td><td>${veteran}</td></tr>
             `;
 
-            // Символьная диаграмма
             const maxCount = Math.max(young, experienced, veteran);
             const chartHTML = `
                 Молодой:   ${'█'.repeat(young)} ${young}<br>
@@ -267,7 +251,6 @@
             document.getElementById('chart').innerHTML = chartHTML;
         }
 
-        // Инициализация
         window.onload = function() {
             const today = getCurrentDate();
             fillEmployeesTable(today);
