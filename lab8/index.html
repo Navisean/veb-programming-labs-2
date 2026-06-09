@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Демонстрация селекторов</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            line-height: 1.6;
+        }
+        #my_links {
+            border: 2px solid #4CAF50;
+            padding: 15px;
+            margin: 20px 0;
+            background: #f9f9f9;
+        }
+        #moto_table {
+            border-collapse: collapse;
+            width: 100%;
+            max-width: 600px;
+            margin: 20px 0;
+        }
+        #moto_table th, #moto_table td {
+            border: 1px solid #666;
+            padding: 8px;
+            text-align: center;
+        }
+        #moto_table tr:nth-child(even) {
+            background: #f0f0f0;
+        }
+        .highlight {
+            background: yellow !important;
+            border: 3px solid red !important;
+            font-weight: bold;
+        }
+        .result {
+            margin: 15px 0;
+            padding: 12px;
+            background: #e7f3ff;
+            border-left: 5px solid #2196F3;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Демонстрация jQuery селекторов</h1>
+
+
+    <h2>1. Блок </h2>
+    <div id="my_links">
+        <ul>
+            <li>Обычный пункт без ссылки</li>
+            <li><a href="https://example.com">Ссылка 1</a></li>
+            <li><a href="documents/report.pdf">Документы — PDF</a></li>
+            <li>Ещё один пункт</li>
+            <li><a href="documents/guide.docx">Документы — DOCX</a></li>
+            <li><a href="https://other.com">Другая ссылка</a></li>
+        </ul>
+    </div>
+
+    
+    <h2>2. Таблица </h2>
+    <table id="moto_table">
+        <thead>
+            <tr>
+                <th>№</th>
+                <th>Мотоцикл</th>
+                <th>Модель</th>
+                <th>Год</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td>1</td><td>Honda</td><td>CBR</td><td>2020</td></tr>
+            <tr><td>2</td><td>Yamaha</td><td>R1</td><td>2022</td></tr>
+            <tr><td>3</td><td>Kawasaki</td><td>Ninja</td><td>2019</td></tr>
+            <tr><td>4</td><td>Suzuki</td><td>GSX</td><td>2023</td></tr>
+            <tr><td>5</td><td>Ducati</td><td>Panigale</td><td>2021</td></tr>
+        </tbody>
+    </table>
+
+   
+
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script>
+        $(document).ready(function() {
+
+            // 1. li внутри #my_links, которые содержат элементы a
+            const liWithA = $('#my_links li:has(a)');
+            liWithA.addClass('highlight');
+            
+
+            // 2. Все ссылки внутри #my_links, у которых href начинается с "documents"
+            const docsLinks = $('#my_links a[href^="documents"]');
+            docsLinks.addClass('highlight');
+
+            // 3. Последние ячейки в чётных строках таблицы #moto_table
+            const lastCellsEven = $('#moto_table tr:even td:last-child');
+            lastCellsEven.addClass('highlight');
+
+        });
+    </script>
+
+</body>
+</html>

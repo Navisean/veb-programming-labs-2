@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Лабораторная работа №9 - jQuery</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        body { font-family: Arial, sans-serif; }
+        img { margin: 10px; }
+        #header { text-align: center; }
+        .motorcycles img { border: 1px solid #ccc; }
+    </style>
+</head>
+<body>
+
+    <div id="header">
+        <h1 id="main_h1">Шапка сайта</h1>
+        <img src="logo.jpg" alt="Логотип" id="logo">
+    </div>
+
+    <div class="motorcycles">
+        <h2>Мотоциклы</h2>
+        <img src="moto1.jpg" alt="Мотоцикл 1">
+        <img src="moto2.jpg" alt="Мотоцикл 2">
+        <img src="moto3.jpg" alt="Мотоцикл 3">
+    </div>
+
+    <script>
+        $(document).ready(function() {
+
+            // 1. Выборка логотипа тремя разными способами
+            $('#main_h1').text('Текст изменённый с помощью jQuery');
+
+            // Способ 1 (по id)
+            var myLogo1 = $('#logo').hide(3000).show(3000);
+
+            // Способ 2 (по атрибуту alt)
+            $('img[alt="Логотип"]').hide(2000).show(2000);
+
+            // Способ 3 (по родителю + img)
+            $('#header img:first').fadeOut(1500).fadeIn(1500);
+
+
+            // 2. Скрыть все картинки кроме первой за 5 секунд
+            $('.motorcycles img:not(:first)').hide(5000);
+
+
+            // Функция изменения атрибута
+            function changeAttr(elementId, attrName, newValue) {
+                $('#' + elementId).attr(attrName, newValue);
+            }
+
+            // Пример использования функции
+            changeAttr('logo', 'title', 'Новый заголовок логотипа');
+
+
+            // 3. Работа с картинкой второго мотоцикла (moto2.jpg)
+            $('img[src*="moto2.jpg"]')
+                .css('border', '1px solid #333333')           // начальная рамка
+                .animate({ 'border-width': '5px' }, 5000)     // анимация рамки
+                .queue(function(next) {                       // после анимации
+                    $('#header').fadeOut(5000);
+                    next();
+                });
+
+
+            // 4. Добавление нового абзаца в конец body + стилизация
+            $('body')
+                .append('<p id="newparagraph">Это новый абзац, добавленный с помощью jQuery.</p>')
+                .find('#newparagraph')
+                .css({
+                    'background-color': 'black',
+                    'color': 'white',
+                    'padding': '15px',
+                    'margin-top': '20px'
+                });
+
+        });
+    </script>
+</body>
+</html>
