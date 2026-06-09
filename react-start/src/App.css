@@ -1,0 +1,114 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: #f5f5f5;
+  padding: 20px;
+}
+
+.container {
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.task {
+  background: white;
+  padding: 25px;
+  margin-bottom: 30px;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+h1, h2 {
+  color: #333;
+  margin-bottom: 15px;
+}
+
+.date-box {
+  font-size: 1.4rem;
+  padding: 15px;
+  background: #e3f2fd;
+  border-radius: 8px;
+  text-align: center;
+}
+
+/* Таблица акций */
+.stock-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+
+.stock-table th, .stock-table td {
+  padding: 12px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}
+
+.stock-table th {
+  background: #1976d2;
+  color: white;
+}
+
+/* ==================== ШАХМАТНАЯ ДОСКА ==================== */
+.chess-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 20px;
+}
+
+.files {
+  display: grid;
+  grid-template-columns: repeat(8, 50px);
+  width: 400px;
+  text-align: center;
+  font-weight: bold;
+  color: #555;
+  margin: 5px 0;
+}
+
+.board {
+  display: flex;
+  flex-direction: column;     /* ← Вот это было пропущено! */
+  border: 12px solid #3d2b1f;
+  border-radius: 8px;
+  overflow: hidden;
+  background: #3d2b1f;
+}
+
+.rank {
+  display: flex;
+}
+
+.square {
+  width: 50px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+  border: 1px solid rgba(0,0,0,0.1); /* для красоты */
+}
+
+.black {
+  background-color: #769656;
+}
+
+.white {
+  background-color: #f0d9b5;
+}
+
+.coord {
+  width: 25px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  color: #555;
+  font-size: 0.95rem;
+}
