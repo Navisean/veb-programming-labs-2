@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Лабораторная работа №5 - Формы (Вариант 5)</title>
+    <title>Лабораторная работа №7 — Local Storage</title>
     <style>
         body {
             font-family: Verdana, Geneva, Tahoma, sans-serif;
@@ -33,6 +33,22 @@
             border: 2px solid darkcyan;
             border-radius: 4px;
         }
+        button {
+            cursor: pointer;
+            padding: 6px 12px;
+            margin: 2px;
+            border-radius: 4px;
+        }
+        .delete-btn {
+            background-color: #e74c3c;
+            color: white;
+            border: none;
+        }
+        .add-btn {
+            background-color: #27ae60;
+            color: white;
+            border: none;
+        }
         .error {
             color: red;
             font-weight: bold;
@@ -61,22 +77,30 @@
             padding: 10px;
             border-radius: 4px;
         }
+        .form-group {
+            margin-bottom: 15px;
+        }
     </style>
 </head>
 <body>
-    <h1>Лабораторная работа №5 — Формы</h1>
+    <h1>Лабораторная работа №7 — Local Storage</h1>
     <h2>Вариант 5</h2>
 
     <section>
         <h2>1. Расчёт рабочих и выходных дней между двумя датами</h2>
         <form id="dateForm">
-            <label>Дата начала (ДД.ММ.ГГГГ):</label><br>
-            <input type="text" id="startDate" required><br><br>
+            <div class="form-group">
+                <label>Дата начала (ДД.ММ.ГГГГ):</label><br>
+                <input type="text" id="startDate" placeholder="Например: 01.06.2025">
+            </div>
             
-            <label>Дата окончания (ДД.ММ.ГГГГ):</label><br>
-            <input type="text" id="endDate" required><br><br>
+            <div class="form-group">
+                <label>Дата окончания (ДД.ММ.ГГГГ):</label><br>
+                <input type="text" id="endDate" placeholder="Например: 15.06.2025">
+            </div>
             
             <input type="button" value="Рассчитать" onclick="calculateDays()">
+            <input type="button" value="Очистить поля" onclick="clearDateFields()">
         </form>
         <div id="daysResult" class="result"></div>
     </section>
@@ -85,6 +109,20 @@
         <h2>2. Анкета сотрудников и категории по стажу</h2>
         <p><strong>Сегодня:</strong> <span id="currentDate"></span></p>
         
+        <!-- Форма добавления нового сотрудника -->
+        <h3>Добавить нового сотрудника</h3>
+        <form id="addEmployeeForm">
+            <div class="form-group">
+                <label>Фамилия:</label><br>
+                <input type="text" id="newName" placeholder="Введите фамилию">
+            </div>
+            <div class="form-group">
+                <label>Дата приёма (ДД.ММ.ГГГГ):</label><br>
+                <input type="text" id="newHireDate" placeholder="Например: 10.03.2023">
+            </div>
+            <input type="button" class="add-btn" value="Добавить сотрудника" onclick="addEmployee()">
+        </form>
+
         <table id="employeesTable">
             <thead>
                 <tr>
@@ -92,6 +130,7 @@
                     <th>Дата приёма</th>
                     <th>Стаж (лет)</th>
                     <th>Категория</th>
+                    <th>Действия</th>
                 </tr>
             </thead>
             <tbody></tbody>
@@ -110,45 +149,61 @@
 
         <h3>Диаграмма (символьная)</h3>
         <div id="chart" class="chart"></div>
+
+        <br>
+        <button onclick="resetToDefault()" style="background-color: #f39c12;">Сбросить к исходным данным</button>
     </section>
 
     <script>
+        const STORAGE_KEY = 'lab7_employees';
+        let employees = [];
+
+        function loadEmployees() {
+            const saved = localStorage.getItem(STORAGE_KEY);
+            if (saved) {
+                employees = JSON.parse(saved);
+            } else {
+                employees = [
+                    { name: "Иванов", hireDate: "2024-03-15" },
+                    { name: "Петрова", hireDate: "2022-11-01" },
+                    { name: "Сидоров", hireDate: "2019-05-20" },
+                    { name: "Кузнецова", hireDate: "2018-01-10" },
+                    { name: "Смирнов", hireDate: "2026-02-01" },
+                    { name: "Васильева", hireDate: "2015-08-30" }
+                ];
+                saveEmployees();
+            }
+        }
+
+        function saveEmployees() {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(employees));
+        }
+
         function getCurrentDate() {
             const now = new Date();
             document.getElementById('currentDate').textContent = now.toLocaleDateString('ru-RU');
             return now;
         }
 
-        const employees = [
-            { name: "Иванов", hireDate: "2024-03-15" },
-            { name: "Петрова", hireDate: "2022-11-01" },
-            { name: "Сидоров", hireDate: "2019-05-20" },
-            { name: "Кузнецова", hireDate: "2018-01-10" },
-            { name: "Смирнов", hireDate: "2026-02-01" },
-            { name: "Васильева", hireDate: "2015-08-30" }
-        ];
-
         function parseDate(dateStr) {
             if (!dateStr) return null;
-
             dateStr = dateStr.trim();
 
             let date = null;
-
-            // Формат ДД.ММ.ГГГГ
             if (/^\d{1,2}\.\d{1,2}\.\d{4}$/.test(dateStr)) {
                 const [day, month, year] = dateStr.split('.').map(Number);
                 date = new Date(year, month - 1, day);
-            } 
-            // Формат ГГГГ-ММ-ДД (для внутренних дат)
-            else if (/^\d{4}-\d{1,2}-\d{1,2}$/.test(dateStr)) {
+            } else if (/^\d{4}-\d{1,2}-\d{1,2}$/.test(dateStr)) {
                 date = new Date(dateStr);
             }
 
-            if (date && !isNaN(date.getTime())) {
-                return date;
-            }
+            if (date && !isNaN(date.getTime())) return date;
             return null;
+        }
+
+        function formatDateForStorage(dateStr) {
+            const date = parseDate(dateStr);
+            return date ? date.toISOString().split('T')[0] : null;
         }
 
         function calculateDays() {
@@ -166,33 +221,31 @@
             const startDate = parseDate(startInput);
             const endDate = parseDate(endInput);
 
-            if (!startDate || isNaN(startDate.getTime())) {
-                resultDiv.innerHTML = '<span class="error">Ошибка: Неверный формат или несуществующая дата начала!</span>';
+            if (!startDate) {
+                resultDiv.innerHTML = '<span class="error">Ошибка: Неверный формат даты начала!</span>';
                 return;
             }
-            if (!endDate || isNaN(endDate.getTime())) {
-                resultDiv.innerHTML = '<span class="error">Ошибка: Неверный формат или несуществующая дата окончания!</span>';
+            if (!endDate) {
+                resultDiv.innerHTML = '<span class="error">Ошибка: Неверный формат даты окончания!</span>';
                 return;
             }
-
             if (startDate > endDate) {
-                resultDiv.innerHTML = '<span class="error">Ошибка: Дата начала должна быть раньше или равна дате окончания!</span>';
+                resultDiv.innerHTML = '<span class="error">Ошибка: Дата начала должна быть раньше даты окончания!</span>';
                 return;
             }
 
-            let workingDays = 0;
-            let weekendDays = 0;
+            let workingDays = 0, weekendDays = 0;
             let current = new Date(startDate);
 
             while (current <= endDate) {
                 const dayOfWeek = current.getDay();
-                if (dayOfWeek === 0 || dayOfWeek === 6) {
-                    weekendDays++;
-                } else {
-                    workingDays++;
-                }
+                if (dayOfWeek === 0 || dayOfWeek === 6) weekendDays++;
+                else workingDays++;
                 current.setDate(current.getDate() + 1);
             }
+
+            localStorage.setItem('lastStartDate', startInput);
+            localStorage.setItem('lastEndDate', endInput);
 
             resultDiv.innerHTML = `
                 <strong>Результат:</strong><br>
@@ -203,31 +256,28 @@
             `;
         }
 
+        function clearDateFields() {
+            document.getElementById('startDate').value = '';
+            document.getElementById('endDate').value = '';
+            document.getElementById('daysResult').innerHTML = '';
+        }
+
         function fillEmployeesTable(today) {
             const tbody = document.querySelector('#employeesTable tbody');
             tbody.innerHTML = '';
             
             let young = 0, experienced = 0, veteran = 0;
 
-            employees.forEach(emp => {
+            employees.forEach((emp, index) => {
                 const hire = new Date(emp.hireDate);
                 let years = today.getFullYear() - hire.getFullYear();
                 const monthDiff = today.getMonth() - hire.getMonth();
-                if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < hire.getDate())) {
-                    years--;
-                }
+                if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < hire.getDate())) years--;
 
-                let category = '';
-                if (years < 1) {
-                    category = 'Молодой';
-                    young++;
-                } else if (years <= 5) {
-                    category = 'Опытный';
-                    experienced++;
-                } else {
-                    category = 'Ветеран';
-                    veteran++;
-                }
+                let category = years < 1 ? 'Молодой' : (years <= 5 ? 'Опытный' : 'Ветеран');
+                if (years < 1) young++;
+                else if (years <= 5) experienced++;
+                else veteran++;
 
                 const row = document.createElement('tr');
                 row.innerHTML = `
@@ -235,28 +285,77 @@
                     <td>${hire.toLocaleDateString('ru-RU')}</td>
                     <td>${years}</td>
                     <td>${category}</td>
+                    <td><button class="delete-btn" onclick="deleteEmployee(${index})">Удалить</button></td>
                 `;
                 tbody.appendChild(row);
             });
 
-            const summaryBody = document.querySelector('#summaryTable tbody');
-            summaryBody.innerHTML = `
+            document.querySelector('#summaryTable tbody').innerHTML = `
                 <tr><td>Молодой (&lt; 1 года)</td><td>${young}</td></tr>
                 <tr><td>Опытный (1–5 лет)</td><td>${experienced}</td></tr>
                 <tr><td>Ветеран (&gt; 5 лет)</td><td>${veteran}</td></tr>
             `;
 
-            const chartHTML = `
+            document.getElementById('chart').innerHTML = `
                 Молодой:   ${'█'.repeat(young)} ${young}<br>
                 Опытный:   ${'█'.repeat(experienced)} ${experienced}<br>
                 Ветеран:   ${'█'.repeat(veteran)} ${veteran}
             `;
-            document.getElementById('chart').innerHTML = chartHTML;
+        }
+
+        function addEmployee() {
+            const name = document.getElementById('newName').value.trim();
+            const dateStr = document.getElementById('newHireDate').value.trim();
+
+            if (!name || !dateStr) {
+                alert('Заполните все поля!');
+                return;
+            }
+
+            const hireDate = formatDateForStorage(dateStr);
+            if (!hireDate) {
+                alert('Неверный формат даты! Используйте ДД.ММ.ГГГГ');
+                return;
+            }
+
+            if (employees.some(e => e.name.toLowerCase() === name.toLowerCase())) {
+                alert('Сотрудник с такой фамилией уже существует!');
+                return;
+            }
+
+            employees.push({ name, hireDate });
+            saveEmployees();
+            fillEmployeesTable(new Date());
+
+            document.getElementById('newName').value = '';
+            document.getElementById('newHireDate').value = '';
+            alert('Сотрудник добавлен!');
+        }
+
+        function deleteEmployee(index) {
+            if (confirm('Удалить сотрудника?')) {
+                employees.splice(index, 1);
+                saveEmployees();
+                fillEmployeesTable(new Date());
+            }
+        }
+
+        function resetToDefault() {
+            if (confirm('Сбросить всех сотрудников к исходным данным?')) {
+                localStorage.removeItem(STORAGE_KEY);
+                loadEmployees();
+                fillEmployeesTable(new Date());
+            }
         }
 
         window.onload = function() {
+            loadEmployees();
             const today = getCurrentDate();
             fillEmployeesTable(today);
+
+            // Восстанавливаем последние даты
+            document.getElementById('startDate').value = localStorage.getItem('lastStartDate') || '';
+            document.getElementById('endDate').value = localStorage.getItem('lastEndDate') || '';
         };
     </script>
 </body>
