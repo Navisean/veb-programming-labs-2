@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Лабораторная работа №10 - Позиционирование в CSS (Вариант 15)</title>
+    <style>
+        body {font-family: Arial, sans-serif; margin:0; padding:0; line-height:1.6; color:#333; background:#f4f4f4;}
+        .container {max-width:1200px; margin:0 auto; padding:20px;}
+        header {background:#2c3e50; color:white; padding:1em 0;}
+        .top-menu {background:#34495e; padding:10px 0;}
+        .top-menu ul {list-style:none; margin:0; padding:0; display:flex; justify-content:center;}
+        .top-menu li {position:relative; margin:0 10px;}
+        .top-menu li a {color:white; text-decoration:none; padding:10px 20px; display:block; transition:all 0.3s; font-weight:bold;}
+        .top-menu li:hover {transform:scale(1.1); z-index:10;}
+        .top-menu li:hover a {background:#e74c3c; color:white; border-radius:5px;}
+        
+        .ad-block {
+            position:fixed; top:10px; left:50%; transform:translateX(-50%);
+            background:linear-gradient(135deg,#ff6b6b,#feca57); color:white;
+            padding:15px 30px; border-radius:10px; box-shadow:0 4px 15px rgba(0,0,0,0.3);
+            z-index:1000; text-align:center; font-weight:bold; max-width:80%; border:3px solid #fff;
+        }
+        main {margin-top:80px;}
+        .relative-box {position:relative; background:#3498db; color:white; padding:20px; margin:20px 0; left:5%; width:90%;}
+        .absolute-child {position:absolute; top:-15px; right:-15px; background:#e74c3c; color:white; padding:10px; border-radius:50%;}
+        footer {background:#2c3e50; color:white; text-align:center; padding:20px; margin-top:50px;}
+    </style>
+</head>
+<body>
+    <div class="ad-block">Изучайте CSS! Позиционирование — ключ к красивому дизайну!</div>
+
+    <header><div class="container"><h1 style="text-align:center;margin:0;">Лабораторная №10: Позиционирование в CSS</h1></div></header>
+
+    <nav class="top-menu">
+        <div class="container">
+            <ul>
+                <li><a href="index.html">Главная</a></li>
+                <li><a href="page2.html">Страница 2 (Тег &lt;a&gt;)</a></li>
+                <li><a href="page3.html">Страница 3 (Таблицы)</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main class="container">
+        <h1>Главная страница (Вариант 15)</h1>
+        <div class="relative-box">
+            <h2>Relative + Absolute</h2>
+            <p>Блок смещён относительно своего места (left:5%). Внутри — абсолютно позиционированный элемент.</p>
+            <div class="absolute-child">Absolute</div>
+        </div>
+    </main>
+    <footer><p>© Лабораторная работа • Все типы позиционирования использованы</p></footer>
+</body>
+</html>

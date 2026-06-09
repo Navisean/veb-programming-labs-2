@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Лабораторная работа № 11. Bootstrap 3</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+            padding: 20px;
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #337ab7;
+        }
+        .block {
+            padding: 25px 15px;
+            margin-bottom: 15px;
+            text-align: center;
+            border: 3px solid #333;
+            border-radius: 8px;
+            font-weight: bold;
+            min-height: 120px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .block1 { background-color: #ff9999; border-color: #d9534f; }
+        .block2 { background-color: #99ff99; border-color: #5cb85c; }
+        .block3 { background-color: #9999ff; border-color: #428bca; }
+        .block4 { background-color: #ffcc99; border-color: #f0ad4e; }
+        .block5 { background-color: #ff99ff; border-color: #9b59b6; }
+        .block6 { background-color: #99ffff; border-color: #5bc0de; }
+        .block7 { background-color: #ffff99; border-color: #f0ad4e; }
+        
+        .row-header {
+            background-color: #337ab7;
+            color: white;
+            padding: 10px;
+            margin-bottom: 15px;
+            text-align: center;
+            font-size: 18px;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Лабораторная работа № 11</h1>
+        <h2 class="text-center">Bootstrap 3 — Адаптивная сетка (Вариант 15)</h2>
+        
+        <!-- Ряд 1: 4 блока -->
+        <div class="row-header">Ряд 1 — 4 блока</div>
+        <div class="row">
+            <div class="col-xs-12 col-sm-6 col-md-2 col-lg-3 block block1">
+                Блок 1.1
+            </div>
+            <div class="col-xs-12 col-sm-6 col-md-2 col-lg-3 block block2">
+                Блок 1.2
+            </div>
+            <div class="col-xs-12 col-sm-6 col-md-2 col-lg-3 block block3">
+                Блок 1.3
+            </div>
+            <div class="col-xs-12 col-sm-6 col-md-2 col-lg-3 block block4">
+                Блок 1.4
+            </div>
+        </div>
+        
+        <!-- Ряд 2: 2 блока (с использованием offset и hidden) -->
+        <div class="row-header">Ряд 2 — 2 блока</div>
+        <div class="row">
+            <!-- Первый блок исчезает на sm -->
+            <div class="col-xs-12 col-md-6 col-lg-6 hidden-sm block block5">
+                Блок 2.1 (скрывается на sm)
+            </div>
+            <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 block block6">
+                Блок 2.2
+            </div>
+        </div>
+        
+        <!-- Ряд 3: 1 блок на половину + 2 блока на оставшуюся половину -->
+        <div class="row-header">Ряд 3 — Половина + 2 блока</div>
+        <div class="row">
+            <!-- Блок занимающий половину -->
+            <div class="col-xs-12 col-sm-6 col-md-6 block block7">
+                Блок 3.1 (половина экрана)
+            </div>
+            
+            <!-- Второй блок (на xs вместо него — пустое пространство) -->
+            <div class="col-xs-12 col-sm-3 col-md-3 hidden-xs block block1">
+                Блок 3.2 (скрывается на xs)
+            </div>
+            
+            <!-- Третий блок с offset на xs для создания пустого пространства -->
+            <div class="col-xs-12 col-xs-offset-0 col-sm-3 col-md-3 block block2">
+                Блок 3.3
+            </div>
+        </div>
+
+        
+    </div>
+
+   
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+</body>
+</html>
